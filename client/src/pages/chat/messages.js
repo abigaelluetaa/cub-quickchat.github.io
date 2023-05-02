@@ -15,7 +15,7 @@ const Messages = ({ socket }) => {
         {
           message: data.message,
           username: data.username,
-          __createdtime__: data.__createdtime__,
+          timestamp: data.timestamp,
         },
       ]);
     });
@@ -29,7 +29,7 @@ const Messages = ({ socket }) => {
     socket.on('last_100_messages', (last100Messages) => {
       console.log('Last 100 messages:', JSON.parse(last100Messages));
       last100Messages = JSON.parse(last100Messages);
-      // Sort these messages by __createdtime__
+      // Sort these messages by timestamp
       last100Messages = sortMessagesByDate(last100Messages);
       setMessagesReceived((state) => [...last100Messages, ...state]);
     });
@@ -44,7 +44,7 @@ const Messages = ({ socket }) => {
 
   function sortMessagesByDate(messages) {
     return messages.sort(
-      (a, b) => parseInt(a.__createdtime__) - parseInt(b.__createdtime__)
+      (a, b) => parseInt(a.timestamp) - parseInt(b.timestamp)
     );
   }
 
@@ -61,7 +61,7 @@ const Messages = ({ socket }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span className={styles.msgMeta}>{msg.username}</span>
             <span className={styles.msgMeta}>
-              {formatDateFromTimestamp(msg.__createdtime__)}
+              {formatDateFromTimestamp(msg.timestamp)}
             </span>
           </div>
           <p className={styles.msgText}>{msg.message}</p>

@@ -37,12 +37,12 @@ io.on('connection', (socket) => {
     socket.on('join_room', (data) => {
       const { username, room } = data; // Data sent from client when join_room event emitted
       socket.join(room); // Join the user to a socket room
-      let __createdtime__ = Date.now(); // Current timestamp
+      const __createdtime__ = Date.now(); // Current timestamp
       // Send message to all users currently in the room, apart from the user that just joined
       socket.to(room).emit('receive_message', {
         message: `${username} has joined the chat room`,
         username: CHAT_BOT,
-        __createdtime__,
+        timestamp: __createdtime__,
       });
       mongoGetMessage(room)
       .then((last100Messages) => {
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
     socket.emit('receive_message', {
       message: `Welcome ${username}`,
       username: CHAT_BOT,
-      __createdtime__,
+      timestamp: __createdtime__,
     });
 
     // Save the new user to the room
@@ -81,7 +81,7 @@ io.on('connection', (socket) => {
             message: `CHAT_BOT: ${response.message}`,
             username: 'CHAT_BOT',
             room: response.room,
-            __createdtime__: response.__createdtime__,
+            timestamp: response.timestamp,
           });
         } catch (error) {
           console.log(error);
@@ -96,7 +96,7 @@ io.on('connection', (socket) => {
             message: response.message,
             username: response.username,
             room: response.room,
-            __createdtime__: response.__createdtime__,
+            timestamp: response.timestamp,
           });
         } catch (error) {
           console.log(error);
